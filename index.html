@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>jsnotsite</title>
+    <style>
+        body {
+            background-color: #ffc700;
+            /*#00ffe5 blue color*/
+        }
+
+        /*navmenu*/
+        #nav {
+            display: flex;
+            background-color: black;
+            border-radius: 10px;
+
+        }
+
+        #nav li {
+            list-style: none;
+            color: blueviolet;
+            padding: 12px 0px;
+            padding-right: 12px;
+        }
+
+        #nav li a {
+            text-decoration: none;
+        }
+
+
+        .minfoc {
+            display: none;
+            background-color: black;
+            color: white;
+            font-family: 'Comfortaa', cursive;
+            padding: 3px 0px;
+        }
+
+        .epnumtell {
+            font-family: 'Comfortaa', cursive;
+            margin: 6px 8px;
+        }
+
+        h1 {
+            font-family: 'Bruno Ace SC', cursive;
+            display: flex;
+            justify-content: center;
+            font-size: 56px;
+        }
+
+        .buttons {
+            background: none;
+            border: none;
+            text-decoration: underline;
+            font-family: 'Comfortaa', cursive;
+        }
+
+        .fisth {
+            margin: 8px 25px;
+        }
+
+        .sections {
+            margin: 22px 0px;
+        }
+
+        .fisthx2 {
+            margin: 20px 50px;
+        }
+
+        .codecage {
+            border: 2px solid red;
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div>
+                <ul id="nav">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Search</a></li>
+                    <li><a href="#">Go</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <h1>Js Notesite</h1>
+    <section class="sections"><!--ep 47-->
+
+        <div id="ep-47" class="epnumtell">Episode 47- link the script</div>
+        <div id="para47" class="minfoc">
+            <div class="fisth">
+                <h3>how to link Js to html</h3>
+            </div>
+            <ol class="fisth">
+                <li>In &lt;body&gt; tag use &lt;script&gt; tag to write js</li>
+                <li>In &lt;body&gt; tag use &lt;script src = "your.js"&gt; tag to connect js file to html</li>
+            </ol>
+            <div class="fisth">
+                <h3>how to write something in console</h3>
+            </div>
+            <div class="fisthx2"> console.log(); </div>
+        </div>
+        <button id="ep-47button" class="buttons" onclick="hide('para47')">Read more</button>
+    </section>
+
+    <section class="sections"><!--ep 48-->
+        <div id="ep-48" class="epnumtell">Episode 48- variable in js</div>
+        <div id="para48" class="minfoc">
+            <div class="fisth">
+                <h3>How to decler a veriable in Js</h3>
+            </div>
+            <div class="fisthx2"> var a = 23; //but not recommanded </div>
+            <div class="fisth">
+                <h3>Operators in Js</h3>
+            </div>
+            <ol class="fisth">
+                <li>Unary operator- operators with single operand for ex. -0 or x = -x</li>
+                <li>Binary operator- operators with two opperands for ex. x = x + 6</li>
+            </ol>
+            <div class="fisth">
+                <h3>Binary operator with strings</h3>
+            </div>
+            <ol class="fisth" class="codecage">
+                <li>var num1 = 56;</li>
+                <li>var num2 = 67;</li>
+                <li></li>
+                <li>console.log("value of " + (num1 + num2));</li>
+            </ol>
+            <!--not finsed see note copy-->
+        </div>
+        <button id="ep-48button" class="buttons" onclick="hide('para48')">Read more</button>
+    </section>
+
+    <section class="sections"><!--ep 49-->
+        <div id="ep-49" class="epnumtell">Episode 49- String functions</div>
+        <div id="para49" class="minfoc">
+            <div class="fisth">
+                <h3>use of backticks(``)</h3>
+            </div>
+            <div class="fisthx2"> backticks(``) can be used when both the ticks are used in line( " " and ' ' ) </div>
+            <div class="fisthx2"> backticks(``) can also be used to add variables in string </div>
+            <ol class="fisth" class="codecage">
+                <li>var var1 = 23;</li>
+                <li></li>
+                <li>console.log(`value of ${var1}`);</li>
+            </ol>
+            <div class="fisth">
+                <h3>Find lenght of a string</h3>
+            </div>
+            <ol class="fisth" class="codecage">
+                <li>// use .lenght variable to get lenght of a string</li>
+                <li>var str = "this wil call";</li>
+                <li></li>
+                <li>console.log(str.length);</li>
+            </ol>
+            <div class="fisth">
+                <h3>Binary operator with strings</h3>
+            </div>
+            <ol class="fisth" class="codecage">
+
+            </ol>
+        </div>
+        <button id="ep-49button" class="buttons" onclick="hide('para49')">Read more</button>
+    </section>
+    <script>
+        let button1 = document.getElementById('ep-47button');
+        //button1.addEventListener('onclick',hide('para47'));
+        console.log(button1);
+        function hide(id) {
+            let para = document.getElementById(id);
+            if (para.style.display != 'none' && para.style.display != 'block') {
+                para.style.display = 'block';
+            }
+            else if(para.style.display != 'none')
+            {
+                para.style.display = 'none';
+            }
+            else {
+                para.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>
