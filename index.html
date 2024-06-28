@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,6 +78,7 @@
             animation-fill-mode: forwards;
             animation-play-state: running;
         }
+
         .subtitlePara {
             margin: 20px 50px;
         }
@@ -132,84 +132,7 @@
     </header>
     <h1>Js Notesite</h1>
     <div id = "notesection">
-        <section class="sections"><!--ep 47-->
-
-            <div id="ep-47" class="title">Episode 47- link the script</div>
-            <div id="para47" class="paragraph">
-                <div class="subtitle">
-                    <h3>how to link Js to html</h3>
-                </div>
-                <ol class="subtitlePara">
-                    <li>In &lt;body&gt; tag use &lt;script&gt; tag to write js</li>
-                    <li>In &lt;body&gt; tag use &lt;script src = "your.js"&gt; tag to connect js file to html</li>
-                </ol>
-                <div class="subtitle">
-                    <h3>how to write something in console</h3>
-                </div>
-                <div class="subtitlePara"> console.log(); </div>
-            </div>
-            <button id="ep-47button" class="buttons" onclick="hide('para47')">Read more</button>
-        </section>
-    
-        <section class="sections"><!--ep 48-->
-            <div id="ep-48" class="title">Episode 48- variable in js</div>
-            <div id="para48" class="paragraph">
-                <div class="subtitle">
-                    <h3>How to decler a veriable in Js</h3>
-                </div>
-                <div class="subtitlePara"> var a = 23; //but not recommanded </div>
-                <div class="subtitle">
-                    <h3>Operators in Js</h3>
-                </div>
-                <ol class="subtitle">
-                    <li>Unary operator- operators with single operand for ex. -0 or x = -x</li>
-                    <li>Binary operator- operators with two opperands for ex. x = x + 6</li>
-                </ol>
-                <div class="subtitle">
-                    <h3>Binary operator with strings</h3>
-                </div>
-                <ol class="subtitle" class="codecage">
-                    <li>var num1 = 56;</li>
-                    <li>var num2 = 67;</li>
-                    <li></li>
-                    <li>console.log("value of " + (num1 + num2));</li>
-                </ol>
-                <!--not finsed see note copy-->
-            </div>
-            <button id="ep-48button" class="buttons" onclick="hide('para48')">Read more</button>
-        </section>
-    
-        <section class="sections"><!--ep 49-->
-            <div id="ep-49" class="title">Episode 49- String functions</div>
-            <div id="para49" class="paragraph">
-                <div class="subtitle">
-                    <h3>use of backticks(``)</h3>
-                </div>
-                <div class="subtitlePara"> backticks(``) can be used when both the ticks are used in line( " " and ' ' ) </div>
-                <div class="subtitlePara"> backticks(``) can also be used to add variables in string </div>
-                <ol class="subtitle" class="codecage">
-                    <li>var var1 = 23;</li>
-                    <li></li>
-                    <li>console.log(`value of ${var1}`);</li>
-                </ol>
-                <div class="subtitle">
-                    <h3>Find lenght of a string</h3>
-                </div>
-                <ol class="subtitle" class="codecage">
-                    <li>// use .lenght variable to get lenght of a string</li>
-                    <li>var str = "this wil call";</li>
-                    <li></li>
-                    <li>console.log(str.length);</li>
-                </ol>
-                <div class="subtitle">
-                    <h3>Binary operator with strings</h3>
-                </div>
-                <ol class="subtitle" class="codecage">
-    
-                </ol>
-            </div>
-            <button id="ep-49button" class="buttons" onclick="hide('para49')">Read more</button>
-        </section>
+        
     </div>
     <footer>
         <p>&copy; 2024 Your Company Name. All rights reserved.</p>
@@ -233,23 +156,6 @@
         </div>
     </footer>
     <script>
-        let button1 = document.getElementById('ep-47button');
-        //button1.addEventListener('onclick',hide('para47'));
-        console.log(button1);
-        function hide(id) {
-            let para = document.getElementById(id);
-            if (para.style.display != 'none' && para.style.display != 'block') {
-                para.style.display = 'block';
-            }
-            else if(para.style.display != 'none')
-            {
-                para.style.display = 'none';
-            }
-            else {
-                para.style.display = 'block';
-            }
-        }
-
         function makearandomstring(leng)
         {
             str = "";
@@ -286,7 +192,7 @@
             }
             return fakedicts;
         }
-
+        
         document.getElementById("notesection").appendChild(createachapter("sdfsadfsaf",fakedict(),1));
         document.getElementById("notesection").appendChild(createachapter("sdfsadfsaf",fakedict(),1));
         function createachapter(chaptername = "Not Defined", subchapter_Dict = {},number)
@@ -297,13 +203,12 @@
             section.id = "chapter-"+ number.toString();
             section.classList.add("sections");
             
-
             // title for the chapter name
             let title = document.createElement("div");
             title.classList.add("title");
             title.innerText = chaptername;
             section.appendChild(title);
-
+            
             // paragraph
             let para = document.createElement("div");
             para.classList.add("paragraph");
@@ -317,7 +222,7 @@
                 // appendchid
                 subtitle.appendChild(titleH3);
                 para.appendChild(subtitle);
-
+                
                 //subpara
                 let OrderedList = document.createElement("ol");
                 OrderedList.classList.add("subtitlePara");
@@ -325,7 +230,7 @@
                 {
                     let line = document.createElement("li");
                     line.innerText = subchapter_Dict[subChapter][lines];
-
+                    
                     // append child
                     OrderedList.appendChild(line);
                 }
@@ -333,7 +238,7 @@
                 para.appendChild(OrderedList);
             }
             section.appendChild(para);
-
+            
             let button = document.createElement("button");
             button.id = "button-" + number.toString();
             button.classList.add("buttons");
@@ -355,7 +260,20 @@
             section.appendChild(button);
             return section;
         }
-
+        
+        function hide(id) {
+            let para = document.getElementById(id);
+            if (para.style.display != 'none' && para.style.display != 'block') {
+                para.style.display = 'block';
+            }
+            else if(para.style.display != 'none')
+            {
+                para.style.display = 'none';
+            }
+            else {
+                para.style.display = 'block';
+            }
+        }
     </script>
 </body>
 

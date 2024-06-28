@@ -1,20 +1,26 @@
-import json 
+import tkinter as tk
+from tkinter import ttk
+import pandas as pd
 
-data = {
-    "name" : "g",
-    "age" : 2,
-    "language":["english","hindi"]
-}
+root = tk.Tk()
 
-json_file_path = "test.json"
-try:
-    with open(json_file_path, 'r') as file:
-        json_string = json.load(file)
-        print(type(json_string))
+sample = {"File Name":[f"file_{i}" for i in range(10)],
+          'Sheet Name': [f"sheet_{i}" for i in range(10)],
+          'Number Of Rows': [f"row_{i}" for i in range(10)],
+          'Number Of Columns': [f"col_{i}" for i in range(10)]
+          }
+df = pd.DataFrame(sample)
+print(df)
+cols = list(df.columns)
 
-except:
-    with open(json_file_path, 'w') as file:
-        json.dump({}, file, indent=4)
+tree = ttk.Treeview(root)
+tree.pack()
+tree["columns"] = cols
+for i in cols:
+    tree.column(i, anchor="w")
+    tree.heading(i, text=i, anchor='w')
 
-#with open(json_file_path,'w') as file:
- #   json.dump(data,file,indent=4)
+for index, row in df.iterrows():
+    tree.insert("",tk.END,text=index,values=list(row))
+print(df)
+root.mainloop()
