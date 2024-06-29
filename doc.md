@@ -1,7 +1,7 @@
 make a python that makes a websites the in my notesties and will manage my json file and other
 
 
-{"type of note" : {"topic name":{"number":"file number","backGround color": "color Name","text color":"color","content":{"chatper": {"sub chapter ": ["lines"]}}}}
+{"type of note" : {"topic name":{"number":"file number","backGround color": "color Name","text color":"color","verision in which made":"number","content":{"chatper": {"sub chapter ": ["lines"]}}}}
 
 
 file number:
