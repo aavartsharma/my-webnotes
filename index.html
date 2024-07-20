@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jsnotsite</title>
+    <title>ProjectName/**/</title>
     <style>
+        :root {
+            --uniform-text-color: white; /* Define the variable for uniform text color */
+        }
         body {
             background-color: #ffc700;
         }
@@ -17,17 +20,28 @@
         }
         #nav li {
             list-style: none;
-            color: blueviolet;
+            color: var(--uniform-text-color);
             padding: 12px 0px;
             padding-right: 12px;
         }
         #nav li a {
             text-decoration: none;
+            color: var(--uniform-text-color);
         }
+
+        .sider{
+            position: absolute;
+            right: 25px;
+        }
+        .sider a 
+        {
+            color: white;
+        }
+
         .paragraph {
             display: none;
             background-color: black;
-            color: white;
+            color: var(--uniform-text-color);
             font-family: 'Comfortaa', cursive;
             padding: 3px 0px;
         }
@@ -41,12 +55,15 @@
             justify-content: center;
             font-size: 56px;
         }
+        ul{
+            list-style-type: none;
+        }
         .buttons {
             background: none;
             border: none;
             text-decoration: underline;
             font-family: 'Comfortaa', cursive;
-            color: white;
+            color: var(--uniform-text-color);
         }
         .subtitle {
             margin: 8px 25px;
@@ -56,7 +73,7 @@
             margin: 22px 0px;
             padding-bottom: 6px;
             background-color: #091212; 
-            color: white; /*  #ff15f6*/
+            color: var(--uniform-text-color); /*  #ff15f6*/
             animation-play-state: paused;
         }
         @keyframes chapter_animation
@@ -82,11 +99,22 @@
         .subtitlePara {
             margin: 20px 50px;
         }
-        .codecage {
-            border: 2px solid red;
-            background-color: black;
+        
+        pre 
+        {
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            position: relative;
+            width: fit-content;
+            padding: 10px;
+            border-radius: 5px;
+            overflow: auto;
         }
-
+        code
+        {
+            color: black;
+        }
         /* Basic styling for the footer */
         footer {
             background-color: black;
@@ -117,28 +145,29 @@
     </style>
 </head>
 
-<body>
+<body id = "body">
     <header>
         <nav>
             <div>
                 <ul id="nav">
                     <li><a href="#">Home</a></li>
                     <li><a href="#">About</a></li>
-                    <li><a href="#">Search</a></li>
-                    <li><a href="#">Go</a></li>
+                    <li><a href="https://github.com/aavartsharma/my-webnotes/tree/main" target= "_blank">SourceCode</a></li>
+                    <li><a href="https://aavartsharma.github.io/personal-websites/#home" target= "_blank">Contact</a></li>
+                    <li class ="sider">FileNumber: ProjectFileNumber/**/</li>
                 </ul>
             </div>
         </nav>
     </header>
-    <h1>Js Notesite</h1>
+    <h1 id = "TopHeading">Js Notesite</h1>
     <div id = "notesection">
-        
+        <!-- <pre><code>print("hello world")<br>print("gta")<br>a = 5$3</code></pre> -->
     </div>
     <footer>
-        <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+        <p>&copy; 2024 Aavart Sharma. All rights reserved.</p>
         <p>
-            <a href="https://aavartsharma.github.io/personal-websites/">About Us</a> |
-            <a href="https://aavartsharma.github.io/personal-websites/">Contact</a> 
+            <a href="https://aavartsharma.github.io/personal-websites/" target= "_blank">About Us</a> |
+            <a href="https://aavartsharma.github.io/personal-websites/"  target= "_blank">Contact</a> 
         </p>
         <div class="social-icons">
             <a href="https://twitter.com/Harwooodbutcher" target="_blank">
@@ -150,16 +179,38 @@
             <a href="https://youtube.com/@aavart_sharma" target="_blank">
                 <img src="https://img.icons8.com/ios-filled/50/ffffff/youtube-play.png" alt="YouTube">
             </a>
-            <a href="https://github.com/aavartsharma/aavartsharma.git" target="_blank">
+            <a href="https://github.com/aavartsharma" target="_blank">
                 <img src="https://img.icons8.com/ios-filled/50/ffffff/github.png" alt="GitHub">
             </a>
         </div>
     </footer>
     <script>
+        let mainDict = "MainDict/**/";
+        let project_name = "ProjectName/**/" + " " + "NoteSite";
+        let textcolor = "TextColor/**/";
+        let background_color = "Background_Color/**/"; 
+        let TopHeading = document.getElementById("TopHeading");
+        TopHeading.innerHTML = project_name;
+        document.documentElement.style.setProperty('--uniform-text-color', textcolor);
+        if(background_color != "Background_Color")
+        {
+            let body = document.getElementById("body");
+            console.log(body);
+            body.style.backgroundColor = background_color;
+        }
+        if(mainDict != "MainDict")
+        {
+            i = 1;
+            for(chapter in mainDict)
+            {
+                document.getElementById("notesection").appendChild(createachapter(chapter,mainDict[chapter],i));
+                i++;
+            }
+        }
         function makearandomstring(leng)
         {
             str = "";
-            for(let i =0; i<leng;i++)
+            for(let i =0; i < leng;i++)
             {
                 const alphabetLength = 27;
                 const randomIndex = Math.floor(Math.random() * alphabetLength);
@@ -181,7 +232,7 @@
         function fakedict()
         {
             fakedicts = {};
-            for(let i = 0; i <2; i++)
+            for(let i = 0; i < 2; i++)
             {
                 fakelist = [];
                 for (let i = 0; i < 3; i++)
@@ -192,9 +243,21 @@
             }
             return fakedicts;
         }
-        
-        document.getElementById("notesection").appendChild(createachapter("sdfsadfsaf",fakedict(),1));
-        document.getElementById("notesection").appendChild(createachapter("sdfsadfsaf",fakedict(),1));
+
+        function codepage(code = [])
+        {
+            let per = document.createElement("pre");
+            let codeTag = document.createElement("code");
+            per.appendChild(codeTag);
+
+            for (let i = 0; i < code.length; i++) 
+            {
+                console.log(code[i]);
+                codeTag.innerHTML += (i+1).toString() + "  " + code[i]+"<br>";
+            }
+            return per;
+
+        }
         function createachapter(chaptername = "Not Defined", subchapter_Dict = {},number)
         {
             // section
@@ -224,21 +287,30 @@
                 para.appendChild(subtitle);
                 
                 //subpara
-                let OrderedList = document.createElement("ol");
+                let OrderedList = document.createElement("ul");
                 OrderedList.classList.add("subtitlePara");
                 for (lines in subchapter_Dict[subChapter])
                 {
                     let line = document.createElement("li");
-                    line.innerText = subchapter_Dict[subChapter][lines];
-                    
+                    console.log()
+                    if(subchapter_Dict[subChapter][lines]["type"] == "code")
+                    {
+                        let CodeArrary = subchapter_Dict[subChapter][lines]["text"].slice(1,-1);
+                        console.log(CodeArrary);
+                        line.appendChild(codepage(CodeArrary));
+                    }
+                    else
+                    {
+                        line.innerText = subchapter_Dict[subChapter][lines]["text"];
+                    }
                     // append child
                     OrderedList.appendChild(line);
                 }
+                //para.appendChild(codepage([`print("hello world")`,`c=2`,`b-0`]));
                 // append child
                 para.appendChild(OrderedList);
             }
             section.appendChild(para);
-            
             let button = document.createElement("button");
             button.id = "button-" + number.toString();
             button.classList.add("buttons");
@@ -276,5 +348,4 @@
         }
     </script>
 </body>
-
 </html>

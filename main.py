@@ -1,22 +1,27 @@
 import os
 import json
-import pandas as pd
 import time
-import tkinter as tk
 import platform
-import random 
-from tkinter import messagebox
+import pandas as pd
+import tkinter as tk
+import webbrowser as wb
 from tkinter import ttk
-from tkinter import colorchooser
 from tkinter import font
+from tkinter import messagebox
+from tkinter import colorchooser
 
-verision = "1.0.1"
+current_verision = "1.0.1"
 json_file_path = "data.json"
-sample = { "File Name":[f"file_{i}" for i in range(10)],
-          'Sheet Name': [f"sheet_{i}" for i in range(10)],
-          'Number Of Rows': [f"row_{i}" for i in range(10)],
-          'Number Of Columns': [f"col_{i}" for i in range(10)]
-         }
+file_directory_path = 'my notes'
+demo_root = None
+sample = {"File Name":[f"file_{i+1}" for i in range(10)],
+          'Sheet Name': [f"sheet_{i+1}" for i in range(10)],
+          'Number Of Rows': [f"row_{i+1}" for i in range(10)],
+          'Number Of Columns': [f"col_{i+1}" for i in range(10)]
+}
+text_color_hexcode = ""
+background_color_hexcode = ""
+notesiteTag = ["code","img"]
 
 def base10_to_base64(num):
     if num == 0:
@@ -24,7 +29,6 @@ def base10_to_base64(num):
     
     base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     base64_string = ""
-    
     while num > 0:
         remainder = num % 64
         base64_string = base64_chars[remainder] + base64_string
@@ -47,17 +51,19 @@ def check_platform():
     else:
         return "Unknown platform"
 
-
 def givename():
+    info_dict = read_the_json()
     current_time= time.localtime()
-
     day = current_time.tm_mday
     month = current_time.tm_mon
     year = current_time.tm_year
-    firstpart = base10_to_base64(day)+base10_to_base64(month)+base10_to_base64(year)
-    secondpart = str(len(sample)+1)
+    firstpart = base10_to_base64(day) + base10_to_base64(month) + base10_to_base64(year)
+    projects = 0
+    for i in info_dict:
+        projects += len(info_dict[i])
+    secondpart = str(projects)
     return firstpart + secondpart
-print(givename())
+
 def read_the_json():
     with open(json_file_path, 'r') as file:
         json_var = json.load(file)
@@ -68,24 +74,27 @@ def write_the_json(data={}):
         json.dump(data, file, indent=4)
 
 class file_info:
-    def __init__(self,fileName,color,textColor,version):
+    def __init__(self,fileName,version):
         self.file_name = str(fileName)
         self.file_number_base64 = givename()
-        self.file_color = color
-        self.text_color = textColor
         self.version = version
+        self.color_dict = {}
         self.chapter_dict = {}
 
     def changeFilename(self,name):
         self.file_name = str(name)
 
-    def changeFileBackGround(self,newcolor):
-        self.file_color = newcolor
+    def changeColorDict(self,dict):
+        self.color_dict = dict
     
-    def changeTextColor(self,newcolor):
-        self.text_color = newcolor
-    def changeversion(self,newverision):
-        self.version = newverision
+    def changeColor(self,color,colorNameInHex):
+        self.color_dict[color] = colorNameInHex
+    
+    def changeversion(self,newcurrent_verision):
+        self.version = newcurrent_verision
+    
+    def AddDictDrictly(self, dict):
+        self.chapter_dict = dict
 
     def AddChapter(self,name):  # chapter
         self.chapter_dict[name] = {}
@@ -98,57 +107,222 @@ class file_info:
     
     def AddLinesToSubchaptertoline(self,name,title,line,linenumber):
         self.chapter_dict[name][title][linenumber] = line
-    def __str__(self):
-        print(self.chapter_dict)
-        return f"file(name={self.file_name},filenameinbase64 = {self.file_number_base64}, filecolor={self.file_color})"
     
+    def __str__(self):
+        return f"file(name={self.file_name},filenameinbase64 = {self.file_number_base64},verision = {self.version}, filecolor={self.color_dict},chapter_dict={self.chapter_dict})"
+
+def make_class_dict(note_class_object):
+    return {note_class_object.file_name : {
+        "number": str(note_class_object.file_number_base64),
+        "webnote_version" : str(current_verision),
+        "colors" : note_class_object.color_dict,
+        "content" : note_class_object.chapter_dict
+    }}
+
 
 try:
     json_Dict = read_the_json()
 except:
     write_the_json({})
 
+def saveObject(type_of_file,name,color_dict = {}, dict ={}):
+    fileObject = file_info(name,current_verision)
+    fileObject.changeColorDict(color_dict)
+    fileObject.AddDictDrictly(dict)
+    json_file_data = read_the_json()
+    try:
+        json_file_data[type_of_file].update(make_class_dict(fileObject))
+    except:
+        json_file_data[type_of_file] = {}
+        json_file_data[type_of_file].update(make_class_dict(fileObject))
+        
+    write_the_json(json_file_data)
 
-def display_UI(content): # for diplaying message
+def make_all_line_in_note(text):
+    manlist = []
+    alllines = text.split("\n")
+    for i in range(len(alllines)):
+        alllines[i] = alllines[i].rstrip()
+    indexingNUmber = 0
+    for i in alllines:
+        a = i.replace("?","").replace("|","").strip()
+        if a in notesiteTag:
+            lineplace = alllines.index(f"|{a}?")
+            lineEnd = alllines.index(f"|/{a}?")
+            #print(alllines[lineplace:(lineEnd+1)])
+            print(f"a={i} , line = {lineplace}")
+            manlist.append({"type" : a,"text" : alllines[lineplace:(lineEnd+1)],"place":lineplace-1+indexingNUmber})
+            indexingNUmber += 1
+            for i in alllines[lineplace:(lineEnd+1)]:
+                del alllines[alllines.index(i)]
+    for i in alllines:
+        # manlist.replace(i,{"type": "text","text": i}) # replace
+        alllines[alllines.index(i)] = {"type": "text","text": i}
+    
+    linofdict = 0
+    for i in manlist:
+        alllines.insert(i["place"] + 1,manlist[linofdict])
+        linofdict += 1
+     
+    return alllines
+
+def make_html_file(filename,filenumber,dict_of_chapter = {},colordict = {}):
+    #html_content = ""
+    # Create the directory if it doesn't exist
+    if not os.path.exists(file_directory_path):
+        os.mkdir(file_directory_path)
+
+    # Define the HTML content
+    with open("index.html") as file:
+        html_content = file.read()
+        html_content = html_content.replace('"MainDict/**/"',str(dict_of_chapter))
+        html_content = html_content.replace("TextColor/**/",str(colordict["text-color"]))
+        html_content = html_content.replace("Background_Color/**/",str(colordict["background-color"]))
+        html_content = html_content.replace("ProjectName/**/",filename)
+        html_content = html_content.replace("ProjectFileNumber/**/",filenumber)
+    
+    # Define the file path
+    file_path = os.path.join(file_directory_path, filename)
+    os.makedirs(file_path, exist_ok=True)
+    html_file = os.path.join(file_path,"index.html")
+    # Write HTML content to the new file
+    try:
+        with open(html_file, 'w') as file:
+            file.write(html_content)
+    except:
+        print("something went wrong.")
+    return html_file
+
+
+def make_note_button(content,type_of_file,name,filenumber, dict ={},colordict = {}): # for diplaying message
     user_text = content.get("1.0",tk.END)
-    print(user_text)
-    global file_name
-    file_name = user_text
+    typeofNote = ""
+    if(type_of_file[0] == ""):
+        typeofNote = type_of_file[1]
+    else:
+        typeofNote = type_of_file[0]
+    saveObject(typeofNote,name,colordict,dict)
+    file_path_html_created = make_html_file(name,filenumber,dict,colordict)
     # messagebox.showinfo("Entered Text","the file was made do you want to open")  # user_text.strip()
     if messagebox.askyesno("Open", "The file was made successfully.\n Do you want to open the notesite?"):
-        pass  # open the file 
+        wb.open(file_path_html_created) 
+    else:
+        pass
 
 def close_window(root):
     if messagebox.askyesno("Close", "Are you sure you want \nto close the window?"):
         root.destroy()
 
-def choose_color(colorselect):
-    color_code = colorchooser.askcolor(title="Choose a color")
-    if color_code:
-        print(f"Selected color: {color_code[1]}")
-        print(color_code)
+def choose_color1(colorselect,color_dict = {}):
+    color_code = colorchooser.askcolor(title = "Choose a color")
+    if (None not in color_code):
         colorselect.config(text= '             ')
         colorselect.config(background = f"{color_code[1]}")
+        color_dict["text-color"] = str(color_code[1])
+        return str(color_code)
 
-def h():
-    print("added the line")
+def choose_color2(colorselect,color_dict = {}):
+    color_code = colorchooser.askcolor(title = "Choose a color")
+    if (None not in color_code):
+        colorselect.config(text= '             ')
+        colorselect.config(background = f"{color_code[1]}")
+        color_dict["background-color"] = str(color_code[1])
+        return str(color_code)
+
+
+
+def add_Line_Button(chapter,sub_chapter,text,dict):
+    chapter_name = chapter.get()
+    sub_chapter_name = sub_chapter.get()
+    content_text = text.get("1.0",tk.END)
+    list_of_notes = make_all_line_in_note(content_text)
+    # listofnotes = []
+    # listoflines = content_text.split("\n")
+    # line_number = 1
+    # for line in listoflines:
+    #     if(line in notesiteTag):
+
+    #         tag1 = listoflines.index(line,listoflines.index(line),line_number)
+    #         tag2 = listoflines.index(line,tag1)
+    #         listofnotes.append({"type": line,"text":listoflines[tag1,tag2]})
+    #     else:
+    #         listofnotes.append({"type": "note","text": line})
+    #     line_number += 1
+
+
+    # for i in notesiteTag:
+    #     if(i in content_text):
+    #         text = content_text[content_text.index(f"﴾{i}﴿") : content_text.index(f"﴾{i}﴿")].replace(f"﴾{i}﴿","")
+    #         content_text = content_text.replace(text,"")
+        
+    # if("\n" in content_text):
+    #     lines = ""
+    #     for i in content_text:
+    #         if(i == "\n"):
+    #             if(i in notesiteTag):
+    #                 print(text)
+    #             listoflines.append({"type":"text",text:lines})
+    #             lines=""
+    #             continue
+    #         lines += i
+    try:
+        dict[chapter_name].update({sub_chapter_name:list_of_notes})
+    except:
+        dict[chapter_name] = {}
+        dict[chapter_name].update({sub_chapter_name:list_of_notes})
+    global demo_root
+    if demo_root is None:  # Check if root is None, meaning it hasn't been created yet
+        demo_root = tk.Tk()
+        demo_root.title("Demo")
+        custom_font = font.Font(family="Helvetica", size=25, weight="bold")
+        bold_font = ("Helvetica", 24, "bold")
+        bold_font_h2 = ("Helvetica", 16, "bold")
+        print(dict)
+        for chapter in dict:
+            ttk.Label(demo_root, text=("" + chapter+ "     "), font=bold_font).pack(fill="x")
+            for sub_chapter in dict[chapter]:
+                ttk.Label(demo_root, text=("         " + sub_chapter+ "     "), font=bold_font_h2).pack(fill="x")
+                for line_dict in dict[chapter][sub_chapter]:
+                    print(line_dict)
+                    if(line_dict["type"] == "text"):
+                        ttk.Label(demo_root, text=(" "*20 + line_dict["text"] + "     "), font=custom_font).pack(fill="x")
+                        
+        demo_root.mainloop()
+    else:
+        for widget in demo_root.winfo_children():
+            widget.destroy() 
+        custom_font = font.Font(family="Helvetica", size=25, weight="bold")
+        bold_font = ("Helvetica", 24, "bold")
+        bold_font_h2 = ("Helvetica", 16, "bold")
+        for chapter in dict:
+            ttk.Label(demo_root, text=("" + chapter+ "     "), font=bold_font).pack(fill="x")
+            for sub_chapter in dict[chapter]:
+                ttk.Label(demo_root, text=("         " + sub_chapter+ "     "), font=bold_font_h2).pack(fill="x")
+                for line_dict in dict[chapter][sub_chapter]:
+                    if(line_dict["type"] == "text"):
+                        ttk.Label(demo_root, text=(" "*20 + line_dict["text"] + "     "), font=custom_font).pack(fill="x")
+                        
+                    
+        # ttk.Label(demo_root,text=dict,font=custom_font).pack()
+        demo_root.config(background="black")
+        demo_root.mainloop()  
 
 def show_welcome_page():
     root = tk.Tk()
     root.title("webnotes")
     root.config(background="black")
     main_frame = ttk.Frame(root, padding="10", borderwidth=2, relief="solid")
-    main_frame.pack(fill='both', expand=True)
+    main_frame.pack(fill='both', expand=False)
     custom_font = font.Font(family="Helvetica", size=25, weight="bold")
-    ttk.Label(main_frame,text="Welcome to notesite",font=custom_font).grid(row=0,column=0,padx=0,pady=5)
+    ttk.Label(main_frame,text="Welcome to notesite",font=custom_font).grid(row=0,column=2,padx=10,pady=5)
     # exit button ,new ,search ,edit
     button_frame = ttk.Frame(root,padding=(20,5),borderwidth=2, relief="solid")
     # button_frame.grid(row=0, column=0, sticky="nsew")
     button_frame.pack(fill='both', expand=True)
-    ttk.Button(button_frame, text= "make new note",command= show_UI_new_Project).grid(row=1,column=0,padx=0,pady=5)
-    ttk.Button(button_frame,text="change contant",command=None).grid(row=1,column=0,padx=20,pady=5)
-    ttk.Button(button_frame,text="show all notesites",command=show_all_notesites).grid(row=2,column=0,padx=20,pady=5)
-    ttk.Button(button_frame, text="Quit", command=lambda: close_window(root)).grid(row=2, column=0, padx=0, pady=5)
+    ttk.Button(button_frame, text= "make new note",command= show_UI_new_Project).grid(row=1,column=1,padx=10,pady=5)
+    ttk.Button(button_frame, text="delete a note",command=delete_notesites).grid(row=1,column=2,padx=20,pady=5)
+    ttk.Button(button_frame, text="show all notesites",command=show_all_notesites).grid(row=2,column=1,padx=20,pady=5)
+    ttk.Button(button_frame, text="Quit", command=lambda: close_window(root)).grid(row=2, column=2, padx=10, pady=5)
     root.mainloop()
     
     
@@ -156,6 +330,7 @@ def show_welcome_android_page():
     root = tk.Tk()
     root.title("webnotes")
     root.config(background="black")
+
     main_frame = ttk.Frame(root, padding="10", borderwidth=2, relief="solid")
     main_frame.pack(fill='both', expand=False)
     custom_font = font.Font(family="Helvetica", size=20, weight="bold")
@@ -165,7 +340,7 @@ def show_welcome_android_page():
     # button_frame.grid(row=0, column=0, sticky="nsew")
     button_frame.pack(fill='both', expand=True)
     ttk.Button(button_frame, text= "make new note",command= show_UI_new_Project).grid(row=1,column=0,padx=20,pady=5)
-    ttk.Button(button_frame,text="change contant",command=None).grid(row=1,column=1,padx=20,pady=5)
+    ttk.Button(button_frame,text="delete a note",command=delete_notesites).grid(row=1,column=1,padx=20,pady=5)
     ttk.Button(button_frame,text="show all notesites",command=show_all_notesites).grid(row=2,column=0,padx=20,pady=5)
     ttk.Button(button_frame, text="Quit", command=lambda: close_window(root)).grid(row=2, column=1, padx=20, pady=5)
     root.mainloop()
@@ -176,7 +351,6 @@ def show_all_notesites():
     for i in range(3):
         df = pd.DataFrame(sample)
         df.index = pd.Index(range(1, len(df) + 1))
-        print(df)
         cols = list(df.columns)
 
         tree = ttk.Treeview(root)
@@ -188,13 +362,13 @@ def show_all_notesites():
 
         for index, row in df.iterrows():
             tree.insert("",tk.END,text=index,values=list(row))
-        print(df)
     
     root.mainloop()
 
-def change_contant_of_notesites():
+def delete_notesites():
     root = tk.Tk()
-    root.title("change contant")
+    root.title("delete file")
+    ttk.Label(root,text= "who am I?").pack()
     root.mainloop()
 
 def show_UI_new_Project():
@@ -202,136 +376,86 @@ def show_UI_new_Project():
     root.title("Make New note")
     root.config(background="lightblue")
     label = ttk.Label(root, text="Enter name of project:")
-    label.grid(row=0, column=0, padx=0, pady=5)
-    text_area = ttk.Entry(root,width=40)
-    text_area.grid(row=0, column=0, padx=0, pady=5)
-
-    DDlabel = ttk.Label(root,text = "choose the type:")
-    DDlabel.grid(row=1,column=0,padx=0,pady = 5)
-    text_area = ttk.Entry(root,width=40)
-    dropdown_var = tk.StringVar(root)
-    dropdown_var.set("None")  # Default value
-    options = ["Choose Type"] + ["Option 1", "Option 2", "Option 3","Option 4"]+["None"]
-    dropdown_menu = ttk.OptionMenu(root, dropdown_var, *options)
-    dropdown_menu.grid(row=1, column=0, padx=0, pady=5) #pady = 50
-
-    colorselect1 = ttk.Label(root, text= "None")
-    colorlabel = ttk.Label(root, text="choose the text color:")
-    colorlabel.grid(row=2,column=0,padx=0,pady=5)
-    colorbutton = ttk.Button(root, text="Choose Color", command= lambda: choose_color(colorselect1))
-    colorbutton.grid(row=2,column=0,padx=0,pady=5)
-    colorselect1.grid(row=2,column=0,padx=15,pady=5)
-
-    colorselect2 = ttk.Label(root, text= "None")
-    colorlabel = ttk.Label(root, text="choose the backGround color:")
-    colorlabel.grid(row=3,column=0,padx=0,pady=5)
-    colorbutton = ttk.Button(root, text="Choose Color", command= lambda: choose_color(colorselect2))
-    colorbutton.grid(row=3,column=0,padx=0,pady=5)
-    colorselect2.grid(row=3,column=0,padx=15,pady=5)
-
-    label = ttk.Label(root, text="Enter Chapter Name:")
-    label.grid(row=4, column=0, padx=0, pady=5)
-    entry = ttk.Entry(root,width=40)
-    entry.grid(row=4, column=0, padx=0, pady=5)
-
-    label = ttk.Label(root, text="Enter Sub-Chapter Name:")
-    label.grid(row=5, column=0, padx=0, pady=5)
-    entry = ttk.Entry(root,width=40)
-    entry.grid(row=5, column=0, padx=0, pady=5)
-
-    label = ttk.Label(root, text = "Enter the content:")
-    label.grid(row=6,column=0,padx=0,pady=5)
-    content = tk.Text(root,width=50,height=10)
-    default_text = "Add your note here."
-    content.insert("1.0", default_text)
-    content.grid(row=6,column=0,padx=0,pady=5)
-
-    addLineButton = ttk.Button(root,text="Add",command=h)
-    addLineButton.grid(row=8,column=0,padx=0,pady=5)
-
-    submit_button = ttk.Button(root,text="make new note",command=lambda: display_UI(content))
-    submit_button.grid(row=9, column=0, padx=0, pady=5)
-
-    close_button = ttk.Button(root, text="Quit", command=lambda: close_window(root))
-    close_button.grid(row=9, column=0, padx=0, pady=5)
-
-    root.mainloop()
+    label.grid(row=0, column=0, padx=10, pady=5)
+    projectNameInput = ttk.Entry(root,width=70)
+    projectNameInput.grid(row=0, column=1, padx=10, pady=5,columnspan=2)
     
-def show_UI_new_Project_andriod():
-    root = tk.Tk()
-    root.title("Make New note")
-    root.config(background="lightblue")
-    label = ttk.Label(root, text="Enter name of project:")
-    label.grid(row=0, column=0, padx=0, pady=5)
-    text_area = ttk.Entry(root,width=40)
-    text_area.grid(row=1, column=0, padx=0, pady=5)
+    color_dictory = {}  # will contain color info
+    note_dict = {}  # will contains chapter info
 
     DDlabel = ttk.Label(root,text = "choose the type:")
-    DDlabel.grid(row=2,column=0,padx=0,pady = 5)
-    text_area = ttk.Entry(root,width=40)
+    DDlabel.grid(row=1,column=0,padx=10,pady = 5)
+    type_text_area = ttk.Entry(root,width=40)   # not added to the scene
+    type_text_area.grid(row=1,column=2)
     dropdown_var = tk.StringVar(root)
     dropdown_var.set("None")  # Default value
-    options = ["Choose Type"] + ["Option 1", "Option 2", "Option 3","Option 4"]+["None"]
+    json_file_contant = read_the_json()
+    options = ["Choose Type"] + [*json_file_contant] + ["None"]
+    
     dropdown_menu = ttk.OptionMenu(root, dropdown_var, *options)
-    dropdown_menu.grid(row=3, column=0, padx=0, pady=5) #pady = 50
+    dropdown_menu.grid(row=1, column=1, padx=10, pady=5) #pady = 50
 
     colorselect1 = ttk.Label(root, text= "None")
     colorlabel = ttk.Label(root, text="choose the text color:")
-    colorlabel.grid(row=4,column=0,padx=0,pady=5)
-    colorbutton = ttk.Button(root, text="Choose Color", command= lambda: choose_color(colorselect1))
-    colorbutton.grid(row=5,column=0,padx=0,pady=5)
-    colorselect1.grid(row=6,column=0,padx=0,pady=5)
+    colorlabel.grid(row=2,column=0,padx=10,pady=5)
+    colorbutton = ttk.Button(root, text="Choose Color", command= lambda: choose_color1(colorselect1,color_dictory))
+    colorbutton.grid(row=2,column=1,padx=10,pady=5)
+    colorselect1.grid(row=2,column=2,padx=15,pady=5)
 
     colorselect2 = ttk.Label(root, text= "None")
     colorlabel = ttk.Label(root, text="choose the backGround color:")
-    colorlabel.grid(row=7,column=0,padx=0,pady=5)
-    colorbutton = ttk.Button(root, text="Choose Color", command= lambda: choose_color(colorselect2))
-    colorbutton.grid(row=8,column=0,padx=0,pady=5)
-    colorselect2.grid(row=9,column=0,padx=15,pady=5)
+    colorlabel.grid(row=3,column=0,padx=10,pady=5)
+    colorbutton = ttk.Button(root, text="Choose Color", command= lambda: choose_color2(colorselect2,color_dictory))
+    colorbutton.grid(row=3,column=1,padx=10,pady=5)
+    colorselect2.grid(row=3,column=2,padx=15,pady=5)
 
     label = ttk.Label(root, text="Enter Chapter Name:")
-    label.grid(row=10, column=0, padx=0, pady=5)
-    entry = ttk.Entry(root,width=40)
-    entry.grid(row=11, column=0, padx=0, pady=5)
+    label.grid(row=4, column=0, padx=10, pady=5)
+    chapter_entry = ttk.Entry(root,width=70)
+    chapter_entry.grid(row=4, column=1, padx=10, pady=5,columnspan=2)
 
     label = ttk.Label(root, text="Enter Sub-Chapter Name:")
-    label.grid(row=12, column=0, padx=0, pady=5)
-    entry = ttk.Entry(root,width=40)
-    entry.grid(row=13, column=0, padx=0, pady=5)
+    label.grid(row=5, column=0, padx=10, pady=5)
+    sub_entry = ttk.Entry(root,width=70)
+    sub_entry.grid(row=5, column=1, padx=10, pady=5,columnspan=2)
 
     label = ttk.Label(root, text = "Enter the content:")
-    label.grid(row=14,column=0,padx=0,pady=5)
-    content = tk.Text(root,width=50,height=10)
+    label.grid(row=6,column=0,padx=10,pady=5)
+    horizontal_scrollbar = ttk.Scrollbar(root, orient="horizontal")
+    horizontal_scrollbar.grid(row=8, column=1, sticky="ew",columnspan=2)
+    content = tk.Text(root,width=70,height=10,wrap="none",xscrollcommand=horizontal_scrollbar.set)
     default_text = "Add your note here."
     content.insert("1.0", default_text)
-    content.grid(row=15,column=0,padx=0,pady=5)
+    content.grid(row=6,column=1,padx=10,pady=5, rowspan=2, columnspan=2)
+    horizontal_scrollbar.config(command=content.xview)
 
-    addLineButton = ttk.Button(root,text="Add",command=h)
-    addLineButton.grid(row=16,column=0,padx=0,pady=5)
+    addLineButton = ttk.Button(root,text="Add",command =lambda : add_Line_Button(chapter_entry,sub_entry,content,note_dict))
+    addLineButton.grid(row=9,column=1,padx=10,pady=5 ,columnspan=2)
 
-    submit_button = ttk.Button(root,text="make new note",command=lambda: display_UI(content))
-    submit_button.grid(row=17, column=0, padx=0, pady=5)
+    submit_button = ttk.Button(root,text="make new note",command= lambda : make_note_button(content,[type_text_area.get(),dropdown_var.get()],projectNameInput.get(),givename(),note_dict,color_dictory)) 
+    submit_button.grid(row=10, column=1, padx=10, pady=5,columnspan=2)                       # content,type_of_file,name, dict ={},colordict = {}  
 
-    close_button = ttk.Button(root, text="Quit", command=lambda: close_window(root))
-    close_button.grid(row=18, column=0, padx=0, pady=5)
+    close_button = ttk.Button(root, text="Quit", command= lambda: close_window(root))
+    close_button.grid(row=10, column=2, padx=10, pady=5,columnspan=2)
 
     root.mainloop()
 
-if(check_platform() == "Android"):
-    #show_UI_new_Project_andriod()
-    show_welcome_android_page()
-else:
-    show_UI_new_Project()
+
+if(__name__ == "__main__"):
+    if(check_platform() == "Android"):
+        show_welcome_android_page()
+    else:
+        show_welcome_page()
+        current_file_name = os.getcwd()
+
+exit()
 # show_UI_new_Project()
 # show_welcome_page()
 # os.makedirs(file_name,exist_ok=True) # file name is not defined
 
 html_code = ""
-exit()
 
 html_file_path = os.path.join(file_name,'index.html')
 
 with open(html_file_path,'w') as html_file:
     html_file.write(html_code)
-
-print("webnote was made sucessfully")

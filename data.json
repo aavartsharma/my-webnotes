@@ -1,1 +1,70 @@
-{}
+{
+    "friends": {
+        "python": {
+            "number": "UHfo0",
+            "webnote_version": "1.0.1",
+            "colors": {
+                "text-color": "#7bc680",
+                "background-color": "#e45c71"
+            },
+            "content": {
+                "intro": {
+                    "print()": [
+                        {
+                            "type": "text",
+                            "text": "print() is a function in python to add line to terimal"
+                        },
+                        {
+                            "type": "code",
+                            "text": [
+                                "|code?",
+                                "print(\"hello world\")",
+                                "|/code?"
+                            ],
+                            "place": 0
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ],
+                    "data types": [
+                        {
+                            "type": "text",
+                            "text": "there are 4 in-built datatypes"
+                        },
+                        {
+                            "type": "text",
+                            "text": "1. int"
+                        },
+                        {
+                            "type": "text",
+                            "text": "2. float"
+                        },
+                        {
+                            "type": "text",
+                            "text": "3. string"
+                        },
+                        {
+                            "type": "text",
+                            "text": "4. list"
+                        },
+                        {
+                            "type": "code",
+                            "text": [
+                                "|code?",
+                                "print(\"hello world\")",
+                                "|/code?"
+                            ],
+                            "place": 4
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
