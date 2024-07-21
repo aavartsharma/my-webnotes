@@ -16,7 +16,7 @@ file_directory_path = 'my notes'
 demo_root = None
 sample = {"File Name":[f"file_{i+1}" for i in range(10)],
           'Sheet Name': [f"sheet_{i+1}" for i in range(10)],
-          'Number Of Rows': [f"row_{i+1}" for i in range(10)],
+          'Number Of Rows': [f"row_{i+1}" for i in range(10)], 
           'Number Of Columns': [f"col_{i+1}" for i in range(10)]
 }
 text_color_hexcode = ""
@@ -60,7 +60,7 @@ def givename():
     firstpart = base10_to_base64(day) + base10_to_base64(month) + base10_to_base64(year)
     projects = 0
     for i in info_dict:
-        projects += len(info_dict[i])
+        projects += len(info_dict[i]) + 1
     secondpart = str(projects)
     return firstpart + secondpart
 
@@ -345,16 +345,50 @@ def show_welcome_android_page():
     ttk.Button(button_frame, text="Quit", command=lambda: close_window(root)).grid(row=2, column=1, padx=20, pady=5)
     root.mainloop()
 
+
+# {"type of note" : {
+#                   "topic name":{
+#                   "number":"file number",
+#                   "verision in which made":"number",
+#                   "color_dict": {
+#                           "background color": "color", 
+#                           "textcolor":"color"
+#                   },
+#                   "content":{
+#                               "chatper": {
+#                                           "sub chapter ": [{"type": "type name" ,"text": "lines"}]
+#                                    }
+#                   }
+#                   }
+ # }
+def make_dataFrame_dict(dict):
+    new_dict = {}
+    name = []
+    number = []
+    verision = []
+    for i in dict:
+        name.append(i)
+        number.append(dict[i]["number"])
+        verision.append(dict[i]["webnote_version"])
+        # inside_dict.update({"name":i,"file number":dict[i]["number"],"verision":dict[i]["webnote_version"]})
+        # new_dict[i] = inside_dict
+    new_dict["File Name"] = name
+    new_dict["File Number"] = number
+    new_dict["verision"] = verision
+    return new_dict
+
 def show_all_notesites():
     root = tk.Tk()
     root.title("all notes")
-    for i in range(3):
-        df = pd.DataFrame(sample)
+    projects_dict = read_the_json()
+    for i in projects_dict:
+        ttk.Label(root, text=i).pack()
+        df = pd.DataFrame(make_dataFrame_dict(projects_dict[i]))
         df.index = pd.Index(range(1, len(df) + 1))
         cols = list(df.columns)
 
         tree = ttk.Treeview(root)
-        tree.pack()
+        tree.pack(padx=20,pady=5)
         tree["columns"] = cols
         for i in cols:
             tree.column(i, anchor="w")
@@ -362,6 +396,22 @@ def show_all_notesites():
 
         for index, row in df.iterrows():
             tree.insert("",tk.END,text=index,values=list(row))
+
+        
+    # for i in range(3):
+    #     df = pd.DataFrame(sample)
+    #     df.index = pd.Index(range(1, len(df) + 1))
+    #     cols = list(df.columns)
+
+    #     tree = ttk.Treeview(root)
+    #     tree.pack()
+    #     tree["columns"] = cols
+    #     for i in cols:
+    #         tree.column(i, anchor="w")
+    #         tree.heading(i, text=i, anchor='w')
+
+    #     for index, row in df.iterrows():
+    #         tree.insert("",tk.END,text=index,values=list(row))
     
     root.mainloop()
 
