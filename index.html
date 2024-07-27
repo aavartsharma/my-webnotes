@@ -16,7 +16,6 @@
             display: flex;
             background-color: black;
             border-radius: 10px;
-
         }
         #nav li {
             list-style: none;
@@ -33,6 +32,7 @@
             position: absolute;
             right: 25px;
         }
+
         .sider a 
         {
             color: white;
@@ -76,9 +76,15 @@
             color: var(--uniform-text-color); /*  #ff15f6*/
             animation-play-state: paused;
         }
+
+        .noteImg
+        {
+            padding: 10px 10px;
+        }
         @keyframes chapter_animation
         {
-            0%{
+            0%
+            {
                 padding: 0px;
             }
             100%
@@ -292,17 +298,78 @@
                 for (lines in subchapter_Dict[subChapter])
                 {
                     let line = document.createElement("li");
-                    console.log()
                     if(subchapter_Dict[subChapter][lines]["type"] == "code")
                     {
-                        let CodeArrary = subchapter_Dict[subChapter][lines]["text"].slice(1,-1);
-                        console.log(CodeArrary);
+                        // removes the first and last elemet
+                        let CodeArrary = subchapter_Dict[subChapter][lines]["text"].slice(1,-1);  
                         line.appendChild(codepage(CodeArrary));
+                    }
+                    else if(subchapter_Dict[subChapter][lines]["type"] == "img")
+                    {
+                        let imgInfo = subchapter_Dict[subChapter][lines]["text"].slice(1,-1);
+                        let imgtag = document.createElement("img");
+                        imgtag.classList.add("noteImg");
+                        for (i in imgInfo)
+                        {
+                            if(i.search("alt=") == 0)
+                            {
+                                newstring = i;
+                                newstring.replace("alt=","");
+                                imgtag.alt = newstring;
+                            }
+                            else if(i.search("src=") == 0)
+                            {
+                                newstring = i;
+                                newstring.replace("src=","");
+                                imgtag.src = "images/" + newstring;
+                            }
+                        }
+                        line.appendChild(imgtag);
+                        // something
+                    }
+                    else if(subchapter_Dict[subChapter][lines]["type"] == "link")
+                    {
+                        let linkInfo = subchapter_Dict[subChapter][lines]["text"].slice(1,-1);
+                        let linkTag = document.createElement("a");
+                        linkTag.target = "_blank";
+                        for (i in linkInfo)
+                        {
+                            if(linkInfo[i].search("link=") == 0 || linkInfo[i].search("link =") == 0 || linkInfo[i].search("link = ") == 0)
+                            {
+                                newstring = linkInfo[i];
+                                nwestring = newstring.replace("link = ","");
+                                newstring = newstring.replace("link =","");
+                                newstring = newstring.replace("link=","");
+                                console.log(newstring[0]);
+                                if(newstring[0] == " ")
+                                {
+                                    newstring = newstring.replace(" ","");
+                                }
+                                newstring = "https://" + newstring;
+                                console.log(newstring);
+                                linkTag.href = newstring;
+                            }
+                            else if(linkInfo[i].search("text = ") == 0 || linkInfo[i].search("text =") == 0 || linkInfo[i].search("text=") == 0)
+                            {
+                                newstring = linkInfo[i];
+                                newstring = newstring.replace("text =","");
+                                newstring = newstring.replace("text","");
+                                newstring = newstring.replace("=","");
+                                /*if(newstring[0] == " ")
+                                {
+                                    newstring.replace(" ","");
+                                }*/
+                                console.log(newstring);
+                                linkTag.innerText = newstring;
+                            }
+                        }
+                        line.appendChild(linkTag);
                     }
                     else
                     {
                         line.innerText = subchapter_Dict[subChapter][lines]["text"];
                     }
+
                     // append child
                     OrderedList.appendChild(line);
                 }
@@ -319,10 +386,12 @@
                 if (para.style.display != 'none' && para.style.display != 'block') 
                 {
                     para.style.display = 'block';
+                    section.style.animation = "none";
                 }
                 else if(para.style.display != 'none')
                 {
                     para.style.display = 'none';
+                    section.style.animation = "chapter_animation";
                 }
                 else 
                 {
@@ -337,6 +406,7 @@
             let para = document.getElementById(id);
             if (para.style.display != 'none' && para.style.display != 'block') {
                 para.style.display = 'block';
+                
             }
             else if(para.style.display != 'none')
             {

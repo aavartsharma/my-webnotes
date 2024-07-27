@@ -143,6 +143,183 @@
                     ]
                 }
             }
+        },
+        "img project": {
+            "number": "ZHfo4",
+            "webnote_version": "1.0.1",
+            "colors": {
+                "text-color": "#7ab9c7",
+                "background-color": "#e25f5f"
+            },
+            "content": {
+                "newest": {
+                    "sdfsdf": [
+                        {
+                            "type": "text",
+                            "text": "Add your note here."
+                        },
+                        {
+                            "type": "img",
+                            "text": [
+                                "|img?",
+                                "alt=Shit",
+                                "src=background.jpg",
+                                "|/img?"
+                            ],
+                            "place": 0
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ]
+                }
+            }
+        },
+        "dr stone op": {
+            "number": "bHfo5",
+            "webnote_version": "1.0.1",
+            "colors": {
+                "text-color": "#81c0a0",
+                "background-color": "#f849eb"
+            },
+            "content": {
+                "ep1": {
+                    "he wakes": [
+                        {
+                            "type": "text",
+                            "text": "Add your note here. he wake a hairless monkey"
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ],
+                    "he starts": [
+                        {
+                            "type": "text",
+                            "text": "he do this"
+                        },
+                        {
+                            "type": "code",
+                            "text": [
+                                "|code?",
+                                "print(\"hello world\")",
+                                "ui = 4",
+                                "j = 7",
+                                "import time",
+                                "import json",
+                                "|/code?"
+                            ],
+                            "place": 0
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ]
+                }
+            }
+        },
+        "gta vice city": {
+            "number": "cHfo6",
+            "webnote_version": "1.0.1",
+            "colors": {
+                "text-color": "#7cbdc5",
+                "background-color": "#ed5454"
+            },
+            "content": {
+                "sdfsdfsdf": {
+                    "sdfsdfds": [
+                        {
+                            "type": "text",
+                            "text": "Add your note here.sdfsdf"
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ],
+                    "sdfsdfdssdfsdf": [
+                        {
+                            "type": "text",
+                            "text": "Add your note here.sdfsdf"
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ]
+                },
+                "sdfsdfsdfsdfsdf": {
+                    "sdfsdfdssdfsdf": [
+                        {
+                            "type": "text",
+                            "text": "Add your note here.sdfsdf"
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ],
+                    "scpicl": [
+                        {
+                            "type": "text",
+                            "text": "Add your note here.sdfsdf"
+                        },
+                        {
+                            "type": "link",
+                            "text": [
+                                "|link?",
+                                "link = aavartsharma.github.io/personal-websites/",
+                                "text =link to my wesite",
+                                "|/link?"
+                            ],
+                            "place": 0
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ]
+                }
+            }
+        },
+        "linktesting": {
+            "number": "cHfo7",
+            "webnote_version": "1.0.1",
+            "colors": {
+                "text-color": "#c27e8f",
+                "background-color": "#e85959"
+            },
+            "content": {
+                "sdfsdf": {
+                    "sdfsd": [
+                        {
+                            "type": "text",
+                            "text": "Add your note here."
+                        },
+                        {
+                            "type": "link",
+                            "text": [
+                                "|link?",
+                                "link = google.com",
+                                "text = Google.com",
+                                "|/link?"
+                            ],
+                            "place": 0
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ]
+                }
+            }
         }
     }
 }

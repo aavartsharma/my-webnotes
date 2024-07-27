@@ -21,3 +21,4 @@ file number:
 
 |code? |/code?
 |img?  |/img?
+|link?  |/link?

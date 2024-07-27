@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import shutil
 import platform
 import pandas as pd
 import tkinter as tk
@@ -19,9 +20,10 @@ sample = {"File Name":[f"file_{i+1}" for i in range(10)],
           'Number Of Rows': [f"row_{i+1}" for i in range(10)], 
           'Number Of Columns': [f"col_{i+1}" for i in range(10)]
 }
+
 text_color_hexcode = ""
 background_color_hexcode = ""
-notesiteTag = ["code","img"]
+notesiteTag = ["code","img","link"]
 
 def base10_to_base64(num):
     if num == 0:
@@ -138,7 +140,7 @@ def saveObject(type_of_file,name,color_dict = {}, dict ={}):
         
     write_the_json(json_file_data)
 
-def make_all_line_in_note(text):
+def make_all_line_in_note(text): # make dict
     manlist = []
     alllines = text.split("\n")
     for i in range(len(alllines)):
@@ -155,7 +157,7 @@ def make_all_line_in_note(text):
             indexingNUmber += 1
             for i in alllines[lineplace:(lineEnd+1)]:
                 del alllines[alllines.index(i)]
-    for i in alllines:
+    for i in alllines:  # if normal text
         # manlist.replace(i,{"type": "text","text": i}) # replace
         alllines[alllines.index(i)] = {"type": "text","text": i}
     
@@ -185,6 +187,14 @@ def make_html_file(filename,filenumber,dict_of_chapter = {},colordict = {}):
     file_path = os.path.join(file_directory_path, filename)
     os.makedirs(file_path, exist_ok=True)
     html_file = os.path.join(file_path,"index.html")
+    pictureFile = os.path.join(file_path,"pics")                                         # left here
+    # for text_dict in dict_of_chapter:
+    #     if(text_dict["type"] == "img"):
+    #         for lines in text_dict["text"]:
+    #             if("path=" in lines):
+    #                 lines.replace("path=","")
+    #                 os.makedirs(os.path.dirname(lines), exist_ok=True)
+    #                 shutil.copy(lines, destination)
     # Write HTML content to the new file
     try:
         with open(html_file, 'w') as file:
@@ -203,7 +213,6 @@ def make_note_button(content,type_of_file,name,filenumber, dict ={},colordict = 
         typeofNote = type_of_file[0]
     saveObject(typeofNote,name,colordict,dict)
     file_path_html_created = make_html_file(name,filenumber,dict,colordict)
-    # messagebox.showinfo("Entered Text","the file was made do you want to open")  # user_text.strip()
     if messagebox.askyesno("Open", "The file was made successfully.\n Do you want to open the notesite?"):
         wb.open(file_path_html_created) 
     else:
@@ -236,40 +245,22 @@ def add_Line_Button(chapter,sub_chapter,text,dict):
     sub_chapter_name = sub_chapter.get()
     content_text = text.get("1.0",tk.END)
     list_of_notes = make_all_line_in_note(content_text)
-    # listofnotes = []
-    # listoflines = content_text.split("\n")
-    # line_number = 1
-    # for line in listoflines:
-    #     if(line in notesiteTag):
-
-    #         tag1 = listoflines.index(line,listoflines.index(line),line_number)
-    #         tag2 = listoflines.index(line,tag1)
-    #         listofnotes.append({"type": line,"text":listoflines[tag1,tag2]})
-    #     else:
-    #         listofnotes.append({"type": "note","text": line})
-    #     line_number += 1
-
-
-    # for i in notesiteTag:
-    #     if(i in content_text):
-    #         text = content_text[content_text.index(f"﴾{i}﴿") : content_text.index(f"﴾{i}﴿")].replace(f"﴾{i}﴿","")
-    #         content_text = content_text.replace(text,"")
-        
-    # if("\n" in content_text):
-    #     lines = ""
-    #     for i in content_text:
-    #         if(i == "\n"):
-    #             if(i in notesiteTag):
-    #                 print(text)
-    #             listoflines.append({"type":"text",text:lines})
-    #             lines=""
-    #             continue
-    #         lines += i
     try:
         dict[chapter_name].update({sub_chapter_name:list_of_notes})
     except:
         dict[chapter_name] = {}
         dict[chapter_name].update({sub_chapter_name:list_of_notes})
+
+    # for chapter in dict:
+    #     for subchapter in dict[chapter]:
+    #         for text_dict in dict[chapter][subchapter]:
+    #             if(text_dict["type"] == "img"):
+    #                 for lines in text_dict["text"]:
+    #                     if("path=" in lines):
+    #                         lines.replace("path=","")
+    #                         os.makedirs(os.path.dirname(lines), exist_ok=True)
+    #                         shutil.copy(lines, destination)
+
     global demo_root
     if demo_root is None:  # Check if root is None, meaning it hasn't been created yet
         demo_root = tk.Tk()
@@ -286,6 +277,7 @@ def add_Line_Button(chapter,sub_chapter,text,dict):
                     print(line_dict)
                     if(line_dict["type"] == "text"):
                         ttk.Label(demo_root, text=(" "*20 + line_dict["text"] + "     "), font=custom_font).pack(fill="x")
+                    
                         
         demo_root.mainloop()
     else:
@@ -345,22 +337,6 @@ def show_welcome_android_page():
     ttk.Button(button_frame, text="Quit", command=lambda: close_window(root)).grid(row=2, column=1, padx=20, pady=5)
     root.mainloop()
 
-
-# {"type of note" : {
-#                   "topic name":{
-#                   "number":"file number",
-#                   "verision in which made":"number",
-#                   "color_dict": {
-#                           "background color": "color", 
-#                           "textcolor":"color"
-#                   },
-#                   "content":{
-#                               "chatper": {
-#                                           "sub chapter ": [{"type": "type name" ,"text": "lines"}]
-#                                    }
-#                   }
-#                   }
- # }
 def make_dataFrame_dict(dict):
     new_dict = {}
     name = []
@@ -370,8 +346,6 @@ def make_dataFrame_dict(dict):
         name.append(i)
         number.append(dict[i]["number"])
         verision.append(dict[i]["webnote_version"])
-        # inside_dict.update({"name":i,"file number":dict[i]["number"],"verision":dict[i]["webnote_version"]})
-        # new_dict[i] = inside_dict
     new_dict["File Name"] = name
     new_dict["File Number"] = number
     new_dict["verision"] = verision
@@ -396,22 +370,6 @@ def show_all_notesites():
 
         for index, row in df.iterrows():
             tree.insert("",tk.END,text=index,values=list(row))
-
-        
-    # for i in range(3):
-    #     df = pd.DataFrame(sample)
-    #     df.index = pd.Index(range(1, len(df) + 1))
-    #     cols = list(df.columns)
-
-    #     tree = ttk.Treeview(root)
-    #     tree.pack()
-    #     tree["columns"] = cols
-    #     for i in cols:
-    #         tree.column(i, anchor="w")
-    #         tree.heading(i, text=i, anchor='w')
-
-    #     for index, row in df.iterrows():
-    #         tree.insert("",tk.END,text=index,values=list(row))
     
     root.mainloop()
 
@@ -497,15 +455,3 @@ if(__name__ == "__main__"):
     else:
         show_welcome_page()
         current_file_name = os.getcwd()
-
-exit()
-# show_UI_new_Project()
-# show_welcome_page()
-# os.makedirs(file_name,exist_ok=True) # file name is not defined
-
-html_code = ""
-
-html_file_path = os.path.join(file_name,'index.html')
-
-with open(html_file_path,'w') as html_file:
-    html_file.write(html_code)
