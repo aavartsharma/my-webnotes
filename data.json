@@ -321,5 +321,41 @@
                 }
             }
         }
+    },
+    "Test": {
+        "T-ardunio": {
+            "number": "eJfo8",
+            "webnote_version": "1.0.1",
+            "colors": {
+                "text-color": "#9369d8",
+                "background-color": "#e6935b"
+            },
+            "content": {
+                "ardunino": {
+                    "gta": [
+                        {
+                            "type": "text",
+                            "text": "Add your note here."
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        },
+                        {
+                            "type": "text",
+                            "text": "print(\"hello world\")"
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ]
+                }
+            }
+        }
     }
 }

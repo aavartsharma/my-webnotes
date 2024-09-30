@@ -14,7 +14,9 @@ from tkinter import colorchooser
 current_verision = "1.0.1"
 json_file_path = "data.json"
 file_directory_path = 'my notes'
+welcome_root = None
 demo_root = None
+
 sample = {"File Name":[f"file_{i+1}" for i in range(10)],
           'Sheet Name': [f"sheet_{i+1}" for i in range(10)],
           'Number Of Rows': [f"row_{i+1}" for i in range(10)], 
@@ -250,16 +252,6 @@ def add_Line_Button(chapter,sub_chapter,text,dict):
     except:
         dict[chapter_name] = {}
         dict[chapter_name].update({sub_chapter_name:list_of_notes})
-
-    # for chapter in dict:
-    #     for subchapter in dict[chapter]:
-    #         for text_dict in dict[chapter][subchapter]:
-    #             if(text_dict["type"] == "img"):
-    #                 for lines in text_dict["text"]:
-    #                     if("path=" in lines):
-    #                         lines.replace("path=","")
-    #                         os.makedirs(os.path.dirname(lines), exist_ok=True)
-    #                         shutil.copy(lines, destination)
 
     global demo_root
     if demo_root is None:  # Check if root is None, meaning it hasn't been created yet
