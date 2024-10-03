@@ -357,5 +357,87 @@
                 }
             }
         }
+    },
+    "computer science": {
+        "quantum computing": {
+            "number": "DKfo10",
+            "webnote_version": "1.0.1",
+            "colors": {
+                "text-color": "#c180a9",
+                "background-color": "#c57c7c"
+            },
+            "content": {
+                "Introduction to quantum computing": {
+                    "what the HELL is a quantum computer?": [
+                        {
+                            "type": "text",
+                            "text": "a classical digital computer like your moblie or your smartphone works"
+                        },
+                        {
+                            "type": "text",
+                            "text": "on bits which can only set to 0 or 1 but quantum computer works on"
+                        },
+                        {
+                            "type": "text",
+                            "text": "qubits(short for quantum bits) and qubit can be any quantum level"
+                        },
+                        {
+                            "type": "text",
+                            "text": "system like a photon passing though a filter or a spin in a magetic"
+                        },
+                        {
+                            "type": "text",
+                            "text": "feild and because of a phenomena called quantum superposition the"
+                        },
+                        {
+                            "type": "text",
+                            "text": "value of a qubit is not limited to 0 or 1 it can be in both state at"
+                        },
+                        {
+                            "type": "text",
+                            "text": "once only on observation the qubit collapse in a definte state this"
+                        },
+                        {
+                            "type": "text",
+                            "text": "mean you can do lot of calculation done on your setup at once"
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ],
+                    "why we need quantum computer?": [
+                        {
+                            "type": "text",
+                            "text": "In a Nutshell, your computer works on switching a small switch but the"
+                        },
+                        {
+                            "type": "text",
+                            "text": "size of this switch is apporching size of an atom and this is a problem"
+                        },
+                        {
+                            "type": "text",
+                            "text": "because quantum mechanics make thing diffcult as the switch can feel a"
+                        },
+                        {
+                            "type": "text",
+                            "text": "phenomena called quantum tunning which in netshell let eletrons pass"
+                        },
+                        {
+                            "type": "text",
+                            "text": "even when switch is off and as moorse's law reaching it's limit we need"
+                        },
+                        {
+                            "type": "text",
+                            "text": "more powerfull computers where we need quantum computer."
+                        },
+                        {
+                            "type": "text",
+                            "text": ""
+                        }
+                    ]
+                }
+            }
+        }
     }
 }

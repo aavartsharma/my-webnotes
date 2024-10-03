@@ -402,17 +402,19 @@
             return section;
         }
         
-        function hide(id) {
+        function hide(id) 
+        {
             let para = document.getElementById(id);
-            if (para.style.display != 'none' && para.style.display != 'block') {
+            if (para.style.display != 'none' && para.style.display != 'block') 
+            {
                 para.style.display = 'block';
-                
             }
             else if(para.style.display != 'none')
             {
                 para.style.display = 'none';
             }
-            else {
+            else 
+            {
                 para.style.display = 'block';
             }
         }

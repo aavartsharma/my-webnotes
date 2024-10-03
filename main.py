@@ -1,7 +1,6 @@
 import os
 import json
 import time
-import shutil
 import platform
 import pandas as pd
 import tkinter as tk
@@ -14,7 +13,7 @@ from tkinter import colorchooser
 current_verision = "1.0.1"
 json_file_path = "data.json"
 file_directory_path = 'my notes'
-welcome_root = None
+main_root = None
 demo_root = None
 
 sample = {"File Name":[f"file_{i+1}" for i in range(10)],
@@ -160,7 +159,6 @@ def make_all_line_in_note(text): # make dict
             for i in alllines[lineplace:(lineEnd+1)]:
                 del alllines[alllines.index(i)]
     for i in alllines:  # if normal text
-        # manlist.replace(i,{"type": "text","text": i}) # replace
         alllines[alllines.index(i)] = {"type": "text","text": i}
     
     linofdict = 0
@@ -268,9 +266,7 @@ def add_Line_Button(chapter,sub_chapter,text,dict):
                 for line_dict in dict[chapter][sub_chapter]:
                     print(line_dict)
                     if(line_dict["type"] == "text"):
-                        ttk.Label(demo_root, text=(" "*20 + line_dict["text"] + "     "), font=custom_font).pack(fill="x")
-                    
-                        
+                        ttk.Label(demo_root, text=(" "*20 + line_dict["text"] + "     "), font=custom_font).pack(fill="x")       
         demo_root.mainloop()
     else:
         for widget in demo_root.winfo_children():
@@ -286,48 +282,8 @@ def add_Line_Button(chapter,sub_chapter,text,dict):
                     if(line_dict["type"] == "text"):
                         ttk.Label(demo_root, text=(" "*20 + line_dict["text"] + "     "), font=custom_font).pack(fill="x")
                         
-                    
-        # ttk.Label(demo_root,text=dict,font=custom_font).pack()
         demo_root.config(background="black")
         demo_root.mainloop()  
-
-def show_welcome_page():
-    root = tk.Tk()
-    root.title("webnotes")
-    root.config(background="black")
-    main_frame = ttk.Frame(root, padding="10", borderwidth=2, relief="solid")
-    main_frame.pack(fill='both', expand=False)
-    custom_font = font.Font(family="Helvetica", size=25, weight="bold")
-    ttk.Label(main_frame,text="Welcome to notesite",font=custom_font).grid(row=0,column=2,padx=10,pady=5)
-    # exit button ,new ,search ,edit
-    button_frame = ttk.Frame(root,padding=(20,5),borderwidth=2, relief="solid")
-    # button_frame.grid(row=0, column=0, sticky="nsew")
-    button_frame.pack(fill='both', expand=True)
-    ttk.Button(button_frame, text= "make new note",command= show_UI_new_Project).grid(row=1,column=1,padx=10,pady=5)
-    ttk.Button(button_frame, text="delete a note",command=delete_notesites).grid(row=1,column=2,padx=20,pady=5)
-    ttk.Button(button_frame, text="show all notesites",command=show_all_notesites).grid(row=2,column=1,padx=20,pady=5)
-    ttk.Button(button_frame, text="Quit", command=lambda: close_window(root)).grid(row=2, column=2, padx=10, pady=5)
-    root.mainloop()
-    
-    
-def show_welcome_android_page():
-    root = tk.Tk()
-    root.title("webnotes")
-    root.config(background="black")
-
-    main_frame = ttk.Frame(root, padding="10", borderwidth=2, relief="solid")
-    main_frame.pack(fill='both', expand=False)
-    custom_font = font.Font(family="Helvetica", size=20, weight="bold")
-    ttk.Label(main_frame,text="Welcome to notesite",font=custom_font).grid(row=0,column=0,padx=0,pady=5)
-    # exit button ,new ,search ,edit
-    button_frame = ttk.Frame(root,padding=(20,5),borderwidth=2, relief="solid")
-    # button_frame.grid(row=0, column=0, sticky="nsew")
-    button_frame.pack(fill='both', expand=True)
-    ttk.Button(button_frame, text= "make new note",command= show_UI_new_Project).grid(row=1,column=0,padx=20,pady=5)
-    ttk.Button(button_frame,text="delete a note",command=delete_notesites).grid(row=1,column=1,padx=20,pady=5)
-    ttk.Button(button_frame,text="show all notesites",command=show_all_notesites).grid(row=2,column=0,padx=20,pady=5)
-    ttk.Button(button_frame, text="Quit", command=lambda: close_window(root)).grid(row=2, column=1, padx=20, pady=5)
-    root.mainloop()
 
 def make_dataFrame_dict(dict):
     new_dict = {}
@@ -343,9 +299,53 @@ def make_dataFrame_dict(dict):
     new_dict["verision"] = verision
     return new_dict
 
-def show_all_notesites():
-    root = tk.Tk()
+#------------------------------------------------------------------------------------------------
+#--------------------------------  main function for roots  -------------------------------------
+#------------------------------------------------------------------------------------------------
+
+def show_welcome_page(root):
+    #root = tk.Tk()
+    for widget in root.winfo_children():
+        widget.destroy() 
+    root.title("webnotes")
+    root.config(background="black")
+    main_frame = ttk.Frame(root, padding="10", borderwidth=2, relief="solid")
+    main_frame.pack(fill='both', expand=False)
+    custom_font = font.Font(family="Helvetica", size=25, weight="bold")
+    ttk.Label(main_frame,text="Welcome to notesite",font=custom_font).grid(row=0,column=2,padx=10,pady=5)
+    # exit button ,new ,search ,edit
+    button_frame = ttk.Frame(root,padding=(20,5),borderwidth=2, relief="solid")
+    # button_frame.grid(row=0, column=0, sticky="nsew")
+    button_frame.pack(fill='both', expand=True)
+    ttk.Button(button_frame, text= "make new note",command= lambda: show_UI_new_Project(root)).grid(row=1,column=1,padx=10,pady=5)
+    ttk.Button(button_frame, text="delete a note",command= lambda: delete_notesites(root)).grid(row=1,column=2,padx=20,pady=5)
+    ttk.Button(button_frame, text="show all notesites",command= lambda: show_all_notesites(root)).grid(row=2,column=1,padx=20,pady=5)
+    ttk.Button(button_frame, text="Quit", command=lambda: close_window(root)).grid(row=2, column=2, padx=10, pady=5)
+    root.mainloop()
+    
+    
+def show_welcome_android_page(root):
+    #root = tk.Tk()
+    root.title("webnotes")
+    root.config(background="black")
+
+    main_frame = ttk.Frame(root, padding="10", borderwidth=2, relief="solid")
+    main_frame.pack(fill='both', expand=False)
+    custom_font = font.Font(family="Helvetica", size=20, weight="bold")
+    ttk.Label(main_frame,text="Welcome to notesite",font=custom_font).grid(row=0,column=0,padx=0,pady=5)
+    button_frame = ttk.Frame(root,padding=(20,5),borderwidth=2, relief="solid")
+    button_frame.pack(fill='both', expand=True)
+    ttk.Button(button_frame, text= "make new note",command= lambda: show_UI_new_Project(root)).grid(row=1,column=0,padx=20,pady=5)
+    ttk.Button(button_frame,text="delete a note",command=lambda: delete_notesites(root)).grid(row=1,column=1,padx=20,pady=5)
+    ttk.Button(button_frame,text="show all notesites",command=lambda: show_all_notesites(root)).grid(row=2,column=0,padx=20,pady=5)
+    ttk.Button(button_frame, text="Quit", command=lambda: close_window(root)).grid(row=2, column=1, padx=20, pady=5)
+    root.mainloop()
+
+
+def show_all_notesites(root):
     root.title("all notes")
+    for widget in root.winfo_children():
+        widget.destroy() 
     projects_dict = read_the_json()
     for i in projects_dict:
         ttk.Label(root, text=i).pack()
@@ -362,88 +362,100 @@ def show_all_notesites():
 
         for index, row in df.iterrows():
             tree.insert("",tk.END,text=index,values=list(row))
-    
+    ttk.Button(root, text="Back", command=lambda: show_welcome_page(root)).pack()
     root.mainloop()
 
-def delete_notesites():
-    root = tk.Tk()
+def delete_notesites(root):
     root.title("delete file")
+    root.config(background="black")
+    for widget in root.winfo_children():
+        widget.destroy() 
     ttk.Label(root,text= "who am I?").pack()
+    back_button = ttk.Button(root, text="Back", command= lambda: show_welcome_page(root))
+    back_button.pack()
     root.mainloop()
 
-def show_UI_new_Project():
-    root = tk.Tk()
+def show_UI_new_Project(root):
+    #root = tk.Tk()
+    for widget in root.winfo_children():
+        widget.destroy() 
     root.title("Make New note")
     root.config(background="lightblue")
-    label = ttk.Label(root, text="Enter name of project:")
+
+    main_frame = ttk.Frame(root, padding="10", borderwidth=2, relief="solid")
+    main_frame.pack(fill='both', expand=True)
+    label = ttk.Label(main_frame, text="Enter name of project:")
     label.grid(row=0, column=0, padx=10, pady=5)
-    projectNameInput = ttk.Entry(root,width=70)
+    projectNameInput = ttk.Entry(main_frame,width=70)
     projectNameInput.grid(row=0, column=1, padx=10, pady=5,columnspan=2)
     
-    color_dictory = {}  # will contain color info
-    note_dict = {}  # will contains chapter info
+    color_dictory = {}  
+    note_dict = {} 
 
-    DDlabel = ttk.Label(root,text = "choose the type:")
+    DDlabel = ttk.Label(main_frame,text = "choose the type:")
     DDlabel.grid(row=1,column=0,padx=10,pady = 5)
-    type_text_area = ttk.Entry(root,width=40)   # not added to the scene
+    type_text_area = ttk.Entry(main_frame,width=40)  
     type_text_area.grid(row=1,column=2)
-    dropdown_var = tk.StringVar(root)
+    dropdown_var = tk.StringVar(main_frame)
     dropdown_var.set("None")  # Default value
     json_file_contant = read_the_json()
     options = ["Choose Type"] + [*json_file_contant] + ["None"]
     
-    dropdown_menu = ttk.OptionMenu(root, dropdown_var, *options)
+    dropdown_menu = ttk.OptionMenu(main_frame, dropdown_var, *options)
     dropdown_menu.grid(row=1, column=1, padx=10, pady=5) #pady = 50
 
-    colorselect1 = ttk.Label(root, text= "None")
-    colorlabel = ttk.Label(root, text="choose the text color:")
+    colorselect1 = ttk.Label(main_frame, text= "None")
+    colorlabel = ttk.Label(main_frame, text="choose the text color:")
     colorlabel.grid(row=2,column=0,padx=10,pady=5)
-    colorbutton = ttk.Button(root, text="Choose Color", command= lambda: choose_color1(colorselect1,color_dictory))
+    colorbutton = ttk.Button(main_frame, text="Choose Color", command= lambda: choose_color1(colorselect1,color_dictory))
     colorbutton.grid(row=2,column=1,padx=10,pady=5)
     colorselect1.grid(row=2,column=2,padx=15,pady=5)
 
-    colorselect2 = ttk.Label(root, text= "None")
-    colorlabel = ttk.Label(root, text="choose the backGround color:")
+    colorselect2 = ttk.Label(main_frame, text= "None")
+    colorlabel = ttk.Label(main_frame, text="choose the backGround color:")
     colorlabel.grid(row=3,column=0,padx=10,pady=5)
-    colorbutton = ttk.Button(root, text="Choose Color", command= lambda: choose_color2(colorselect2,color_dictory))
+    colorbutton = ttk.Button(main_frame, text="Choose Color", command= lambda: choose_color2(colorselect2,color_dictory))
     colorbutton.grid(row=3,column=1,padx=10,pady=5)
     colorselect2.grid(row=3,column=2,padx=15,pady=5)
 
-    label = ttk.Label(root, text="Enter Chapter Name:")
+    label = ttk.Label(main_frame, text="Enter Chapter Name:")
     label.grid(row=4, column=0, padx=10, pady=5)
-    chapter_entry = ttk.Entry(root,width=70)
+    chapter_entry = ttk.Entry(main_frame,width=70)
     chapter_entry.grid(row=4, column=1, padx=10, pady=5,columnspan=2)
 
-    label = ttk.Label(root, text="Enter Sub-Chapter Name:")
+    label = ttk.Label(main_frame, text="Enter Sub-Chapter Name:")
     label.grid(row=5, column=0, padx=10, pady=5)
-    sub_entry = ttk.Entry(root,width=70)
+    sub_entry = ttk.Entry(main_frame,width=70)
     sub_entry.grid(row=5, column=1, padx=10, pady=5,columnspan=2)
 
-    label = ttk.Label(root, text = "Enter the content:")
+    label = ttk.Label(main_frame, text = "Enter the content:")
     label.grid(row=6,column=0,padx=10,pady=5)
-    horizontal_scrollbar = ttk.Scrollbar(root, orient="horizontal")
+    horizontal_scrollbar = ttk.Scrollbar(main_frame, orient="horizontal")
     horizontal_scrollbar.grid(row=8, column=1, sticky="ew",columnspan=2)
-    content = tk.Text(root,width=70,height=10,wrap="none",xscrollcommand=horizontal_scrollbar.set)
+    content = tk.Text(main_frame,width=70,height=10,wrap="none",xscrollcommand=horizontal_scrollbar.set)
     default_text = "Add your note here."
     content.insert("1.0", default_text)
     content.grid(row=6,column=1,padx=10,pady=5, rowspan=2, columnspan=2)
     horizontal_scrollbar.config(command=content.xview)
 
-    addLineButton = ttk.Button(root,text="Add",command =lambda : add_Line_Button(chapter_entry,sub_entry,content,note_dict))
+    addLineButton = ttk.Button(main_frame,text="Add",command =lambda : add_Line_Button(chapter_entry,sub_entry,content,note_dict))
     addLineButton.grid(row=9,column=1,padx=10,pady=5 ,columnspan=2)
 
-    submit_button = ttk.Button(root,text="make new note",command= lambda : make_note_button(content,[type_text_area.get(),dropdown_var.get()],projectNameInput.get(),givename(),note_dict,color_dictory)) 
-    submit_button.grid(row=10, column=1, padx=10, pady=5,columnspan=2)                       # content,type_of_file,name, dict ={},colordict = {}  
+    submit_button = ttk.Button(main_frame,text="make new note",command= lambda : make_note_button(content,[type_text_area.get(),dropdown_var.get()],projectNameInput.get(),givename(),note_dict,color_dictory)) 
+    submit_button.grid(row=10, column=1, padx=10, pady=5,columnspan=2)   
 
-    close_button = ttk.Button(root, text="Quit", command= lambda: close_window(root))
-    close_button.grid(row=10, column=2, padx=10, pady=5,columnspan=2)
+    back_button = ttk.Button(main_frame, text="Back", command= lambda: show_welcome_page(root))
+    back_button.grid(row=10, column=2, padx=10, pady=5,columnspan=2)
 
     root.mainloop()
 
 
 if(__name__ == "__main__"):
+    # current_file_name = os.getcwd()     for getting the current files address
+    # print(current_file_name)            
+    main_root = tk.Tk()
     if(check_platform() == "Android"):
-        show_welcome_android_page()
+        show_welcome_android_page(main_root)
     else:
-        show_welcome_page()
-        current_file_name = os.getcwd()
+        
+        show_welcome_page(main_root)
