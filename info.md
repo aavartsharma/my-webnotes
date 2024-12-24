@@ -19,11 +19,13 @@ file number:
 4.) filling it with contant
 5.) text color 
 
+1.) make it work
+2.) add flask
+3.) add DataBase
+4.) add tag adding fuctions
+5.) 
+
+
 |code? |/code?
 |img?  |/img?
 |link?  |/link?
-
-hhll
-
-
-FFF
